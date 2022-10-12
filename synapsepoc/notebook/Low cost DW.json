@@ -1,0 +1,106 @@
+{
+	"name": "Low cost DW",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "ws1sparkpool1",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "21f87ef5-5fab-4ca9-8451-23a25ee949bd"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/8bf7425c-d999-4803-81ab-9399a154b7d2/resourceGroups/Synapse_demo/providers/Microsoft.Synapse/workspaces/cmpnbnmosngz7ou2pocws1/bigDataPools/ws1sparkpool1",
+				"name": "ws1sparkpool1",
+				"type": "Spark",
+				"endpoint": "https://cmpnbnmosngz7ou2pocws1.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/ws1sparkpool1",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "2.4",
+				"nodeCount": 5,
+				"cores": 8,
+				"memory": 56,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"# Import NYC yellow cab data from Azure Open Datasets\r\n",
+					"from azureml.opendatasets import NycTlcYellow\r\n",
+					"\r\n",
+					"from datetime import datetime\r\n",
+					"from dateutil import parser\r\n",
+					"\r\n",
+					"end_date = parser.parse('2018-05-08 00:00:00')\r\n",
+					"start_date = parser.parse('2018-05-01 00:00:00')\r\n",
+					"\r\n",
+					"nyc_tlc = NycTlcYellow(start_date=start_date, end_date=end_date)\r\n",
+					"nyc_tlc_df = nyc_tlc.to_spark_dataframe()"
+				],
+				"execution_count": 6
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"nyc_tlc_df.show()"
+				],
+				"execution_count": 7
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"nyc_tlc_df.write.format(\"delta\").save(\"abfss://public@cmpnbnmosngz7ou2poc.dfs.core.windows.net/Folder1\")"
+				],
+				"execution_count": 8
+			}
+		]
+	}
+}
