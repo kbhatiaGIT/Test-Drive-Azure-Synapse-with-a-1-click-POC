@@ -1,0 +1,17 @@
+{
+	"name": "SQL script 1",
+	"properties": {
+		"content": {
+			"query": "IF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'SynapseDeltaFormat') \n\tCREATE EXTERNAL FILE FORMAT [SynapseDeltaFormat] \n\tWITH ( FORMAT_TYPE = DELTA)\nGO\n\nIF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'public_cmpnbnmosngz7ou2poc_dfs_core_windows_net') \n\tCREATE EXTERNAL DATA SOURCE [public_cmpnbnmosngz7ou2poc_dfs_core_windows_net] \n\tWITH (\n\t\tLOCATION = 'abfss://public@cmpnbnmosngz7ou2poc.dfs.core.windows.net' \n\t)\nGO\n\nCREATE  VIEW Taxitable1 AS Select \n*\n\tFROM\n    OPENROWSET\n\t(\n        BULK 'Folder1',\n        DATA_SOURCE = 'public_cmpnbnmosngz7ou2poc_dfs_core_windows_net',\n        FORMAT= 'DELTA'\n    ) AS nyc\n\n\n\nSELECT TOP 100 * FROM dbo.Taxitable1\nGO",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "TaxiTable",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
