@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "21f87ef5-5fab-4ca9-8451-23a25ee949bd"
+				"spark.autotune.trackingId": "868cfe80-357f-4c67-9cec-be5680d689d0"
 			}
 		},
 		"metadata": {
@@ -63,7 +63,7 @@
 					"nyc_tlc = NycTlcYellow(start_date=start_date, end_date=end_date)\r\n",
 					"nyc_tlc_df = nyc_tlc.to_spark_dataframe()"
 				],
-				"execution_count": 6
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -81,7 +81,7 @@
 				"source": [
 					"nyc_tlc_df.show()"
 				],
-				"execution_count": 7
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -97,9 +97,9 @@
 					}
 				},
 				"source": [
-					"nyc_tlc_df.write.format(\"delta\").save(\"abfss://public@cmpnbnmosngz7ou2poc.dfs.core.windows.net/Folder1\")"
+					"nyc_tlc_df.write.format(\"delta\").mode(\"overwrite\").save(\"abfss://public@cmpnbnmosngz7ou2poc.dfs.core.windows.net/Folder1\")"
 				],
-				"execution_count": 8
+				"execution_count": null
 			}
 		]
 	}
