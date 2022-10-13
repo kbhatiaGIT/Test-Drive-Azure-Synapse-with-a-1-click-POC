@@ -4,7 +4,7 @@
 		"nbformat": 4,
 		"nbformat_minor": 2,
 		"bigDataPool": {
-			"referenceName": "ws1sparkpool1",
+			"referenceName": "SparkPool2",
 			"type": "BigDataPoolReference"
 		},
 		"sessionProperties": {
@@ -12,12 +12,12 @@
 			"driverCores": 8,
 			"executorMemory": "56g",
 			"executorCores": 8,
-			"numExecutors": 2,
+			"numExecutors": 1,
 			"conf": {
-				"spark.dynamicAllocation.enabled": "false",
-				"spark.dynamicAllocation.minExecutors": "2",
-				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "868cfe80-357f-4c67-9cec-be5680d689d0"
+				"spark.dynamicAllocation.enabled": "true",
+				"spark.dynamicAllocation.minExecutors": "1",
+				"spark.dynamicAllocation.maxExecutors": "6",
+				"spark.autotune.trackingId": "fe4d50ff-a8df-409a-a5cf-a91cd6e86629"
 			}
 		},
 		"metadata": {
@@ -31,21 +31,21 @@
 				"name": "python"
 			},
 			"a365ComputeOptions": {
-				"id": "/subscriptions/8bf7425c-d999-4803-81ab-9399a154b7d2/resourceGroups/Synapse_demo/providers/Microsoft.Synapse/workspaces/cmpnbnmosngz7ou2pocws1/bigDataPools/ws1sparkpool1",
-				"name": "ws1sparkpool1",
+				"id": "/subscriptions/8bf7425c-d999-4803-81ab-9399a154b7d2/resourceGroups/Synapse_demo/providers/Microsoft.Synapse/workspaces/cmpnbnmosngz7ou2pocws1/bigDataPools/SparkPool2",
+				"name": "SparkPool2",
 				"type": "Spark",
-				"endpoint": "https://cmpnbnmosngz7ou2pocws1.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/ws1sparkpool1",
+				"endpoint": "https://cmpnbnmosngz7ou2pocws1.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/SparkPool2",
 				"auth": {
 					"type": "AAD",
 					"authResource": "https://dev.azuresynapse.net"
 				},
-				"sparkVersion": "2.4",
-				"nodeCount": 5,
+				"sparkVersion": "3.2",
+				"nodeCount": 10,
 				"cores": 8,
 				"memory": 56,
-				"automaticScaleJobs": false
+				"automaticScaleJobs": true
 			},
-			"sessionKeepAliveTimeout": 30
+			"sessionKeepAliveTimeout": 60
 		},
 		"cells": [
 			{
@@ -63,7 +63,7 @@
 					"nyc_tlc = NycTlcYellow(start_date=start_date, end_date=end_date)\r\n",
 					"nyc_tlc_df = nyc_tlc.to_spark_dataframe()"
 				],
-				"execution_count": null
+				"execution_count": 1
 			},
 			{
 				"cell_type": "code",
@@ -81,7 +81,7 @@
 				"source": [
 					"nyc_tlc_df.show()"
 				],
-				"execution_count": null
+				"execution_count": 2
 			},
 			{
 				"cell_type": "code",
@@ -99,7 +99,7 @@
 				"source": [
 					"nyc_tlc_df.write.format(\"delta\").mode(\"overwrite\").save(\"abfss://public@cmpnbnmosngz7ou2poc.dfs.core.windows.net/Folder1\")"
 				],
-				"execution_count": null
+				"execution_count": 6
 			}
 		]
 	}
