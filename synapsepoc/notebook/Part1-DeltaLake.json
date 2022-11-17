@@ -1,0 +1,806 @@
+{
+	"name": "Part1-DeltaLake",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "SparkPool2",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 1,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "true",
+				"spark.dynamicAllocation.minExecutors": "1",
+				"spark.dynamicAllocation.maxExecutors": "6",
+				"spark.autotune.trackingId": "13665266-76a6-4d89-b1da-dc7a2fcd45a7"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/8bf7425c-d999-4803-81ab-9399a154b7d2/resourceGroups/Synapse_demo/providers/Microsoft.Synapse/workspaces/cmpnbnmosngz7ou2pocws1/bigDataPools/SparkPool2",
+				"name": "SparkPool2",
+				"type": "Spark",
+				"endpoint": "https://cmpnbnmosngz7ou2pocws1.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/SparkPool2",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.2",
+				"nodeCount": 10,
+				"cores": 8,
+				"memory": 56,
+				"automaticScaleJobs": true
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"## Create a Delta file \r\n",
+					"\r\n",
+					"Provide the format as delta or parquet while creating the file.\r\n",
+					"\r\n",
+					"Below, we are providing the file path for loading the CSV file to delta"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"inputPath = 'abfss://public@cmpnbnmosngz7ou2poc.dfs.core.windows.net/inputfile'"
+				],
+				"execution_count": 2
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"Reading the data into the dataframe. Providing the schema details and header as true for this CSV file.\r\n",
+					"Read the data into a DataFrame. We supply the schema."
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"from pyspark.sql.types import StructType, StructField, DoubleType, IntegerType, StringType\r\n",
+					"\r\n",
+					"inputSchema = StructType([\r\n",
+					"  StructField(\"InvoiceNo\", IntegerType(), True),\r\n",
+					"  StructField(\"StockCode\", StringType(), True),\r\n",
+					"  StructField(\"Description\", StringType(), True),\r\n",
+					"  StructField(\"Quantity\", IntegerType(), True),\r\n",
+					"  StructField(\"InvoiceDate\", StringType(), True),\r\n",
+					"  StructField(\"UnitPrice\", DoubleType(), True),\r\n",
+					"  StructField(\"CustomerID\", IntegerType(), True),\r\n",
+					"  StructField(\"Country\", StringType(), True)\r\n",
+					"])\r\n",
+					"\r\n",
+					"rawDataDF = (spark.read\r\n",
+					"  .option(\"header\", \"false\")\r\n",
+					"  .schema(inputSchema)\r\n",
+					"  .csv(inputPath)\r\n",
+					"            )"
+				],
+				"execution_count": 3
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"DataPath = 'abfss://public@cmpnbnmosngz7ou2poc.dfs.core.windows.net/deltafile'"
+				],
+				"execution_count": 4
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"Provide the appropriate partition - below example partition on `Country` "
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"# write to Delta Lake\r\n",
+					"rawDataDF.write.mode(\"overwrite\").format(\"delta\").partitionBy(\"Country\").save(DataPath)"
+				],
+				"execution_count": 5
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"Spark SQL queries can run directly on a directory of data, for delta use the following syntax: \r\n",
+					"```\r\n",
+					"SELECT * FROM delta.`/path/to/delta_directory`"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"display(spark.sql(\"SELECT * FROM delta.`{}` LIMIT 5\".format(DataPath)))"
+				],
+				"execution_count": 6
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"### CREATE A Table Using Delta Lake\r\n",
+					"\r\n",
+					"Create a table called `customer_data_delta` using `DELTA` out of the above data.\r\n",
+					"\r\n",
+					"The notation is:\r\n",
+					"> `CREATE TABLE <table-name>` <br>\r\n",
+					"  `USING DELTA` <br>\r\n",
+					"  `LOCATION <path-do-data> ` <br>\r\n",
+					"  \r\n",
+					"Note: Tables created with a specified `LOCATION` are considered unmanaged by the metastore. Unlike a managed table, where no path is specified, an unmanaged table’s files are not deleted when you `DROP` the table. However, changes to either the registered table or the files will be reflected in both locations.\r\n",
+					"Since Delta Lake stores schema (and partition) info in the `_delta_log` directory, we do not have to specify partition columns!"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"spark.sql(\"\"\"\r\n",
+					"  DROP TABLE IF EXISTS customer_data_delta\r\n",
+					"\"\"\")\r\n",
+					"spark.sql(\"\"\"\r\n",
+					"  CREATE TABLE customer_data_delta\r\n",
+					"  USING DELTA\r\n",
+					"  LOCATION '{}'\r\n",
+					"\"\"\".format(DataPath))"
+				],
+				"execution_count": 8
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"SELECT count(*) FROM customer_data_delta"
+				],
+				"execution_count": 9
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"Get the metadata details of the table"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"DESCRIBE DETAIL customer_data_delta"
+				],
+				"execution_count": 12
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"\r\n",
+					"## Delta Lake Batch Operations - AppendDelta Lake Batch Operations - Append"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"miniDataInputPath = 'abfss://public@cmpnbnmosngz7ou2poc.dfs.core.windows.net/smallfile/new_data.csv'\r\n",
+					"newDataDF = (spark\r\n",
+					"  .read\r\n",
+					"  .option(\"header\", \"true\")\r\n",
+					"  .schema(inputSchema)\r\n",
+					"  .csv(miniDataInputPath)\r\n",
+					")"
+				],
+				"execution_count": 13
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"display(newDataDF)"
+				],
+				"execution_count": 14
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"newDataDF.count()"
+				],
+				"execution_count": 15
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"(newDataDF\r\n",
+					"  .write\r\n",
+					"  .format(\"delta\")\r\n",
+					"  .partitionBy(\"Country\")\r\n",
+					"  .mode(\"append\")\r\n",
+					"  .save(DataPath)\r\n",
+					")"
+				],
+				"execution_count": 16
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"SELECT count(*) FROM customer_data_delta"
+				],
+				"execution_count": 17
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"##  Upsert into delta lake\r\n",
+					"\r\n",
+					"Can't upsert in parquet files.\r\n",
+					"Using Delta Lake, we can do UPSERTS. Delta Lake combines these operations to guarantee atomicity to\r\n",
+					"- INSERT a row \r\n",
+					"- if the row already exists, UPDATE the row."
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"upsertPath = 'abfss://public@cmpnbnmosngz7ou2poc.dfs.core.windows.net/upsertfile'\r\n",
+					"\r\n",
+					"upsertDF = spark.read.format(\"json\").load(upsertPath)\r\n",
+					"display(upsertDF)"
+				],
+				"execution_count": 18
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"upsertDF.createOrReplaceTempView(\"upsert_data\")"
+				],
+				"execution_count": 19
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"In this upsert\r\n",
+					"- Adding new records for customer 20993\r\n",
+					"- Updating 'Country' column for customer 20993 to Iceland\r\n",
+					"- Updates to 'Description' column for StockCode 22837 "
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"MERGE INTO customer_data_delta\r\n",
+					"USING upsert_data\r\n",
+					"ON customer_data_delta.InvoiceNo = upsert_data.InvoiceNo\r\n",
+					"  AND customer_data_delta.StockCode = upsert_data.StockCode\r\n",
+					"WHEN MATCHED THEN\r\n",
+					"  UPDATE SET *\r\n",
+					"WHEN NOT MATCHED\r\n",
+					"  THEN INSERT *"
+				],
+				"execution_count": 20
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"SELECT * FROM customer_data_delta WHERE CustomerID=20993"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"SELECT DISTINCT(Description) \r\n",
+					"FROM customer_data_delta \r\n",
+					"WHERE StockCode = 22837"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"select  * from customer_data_delta "
+				],
+				"execution_count": 23
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"update customer_data_delta\r\n",
+					"set Description = 'xxx08'\r\n",
+					"WHERE StockCode = 22837"
+				],
+				"execution_count": 31
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"\r\n",
+					"%%sql\r\n",
+					"update customer_data_delta\r\n",
+					"set Description = 'xxx07'\r\n",
+					"WHERE StockCode = 22577"
+				],
+				"execution_count": 30
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"\r\n",
+					"%%sql\r\n",
+					"update customer_data_delta\r\n",
+					"set Description = 'xxx09'\r\n",
+					"WHERE StockCode = 20914"
+				],
+				"execution_count": 32
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"update customer_data_delta\r\n",
+					"set Description = 'xxx10'\r\n",
+					"WHERE StockCode = 20914"
+				],
+				"execution_count": 33
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"update customer_data_delta\r\n",
+					"set Description = 'xxx11'\r\n",
+					"WHERE StockCode = 20914"
+				],
+				"execution_count": 34
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"\r\n",
+					"\r\n",
+					"val df = spark.read\r\n",
+					"  .format(\"delta\")\r\n",
+					"  .option(\"timestampAsOf\", \"1652955732419\")\r\n",
+					"  .load(DataPath)"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					"%%sql\r\n",
+					"SELECT count(*) FROM customer_data_delta TIMESTAMP AS OF \"1652955732419\""
+				],
+				"execution_count": 35
+			}
+		]
+	}
+}
