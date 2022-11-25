@@ -1,0 +1,22 @@
+{
+	"name": "AzureSynapseAnalyticsTable2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "TripFaresSynapseAnalyticsLinkedService",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"SynapseWorkspaceName": "cmpnbnmosngz7ou2pocws1.database.windows.net",
+				"SQLDedicatedPoolName": "cmpnbnmosngz7ou2pocws1p1",
+				"keyVaultName": "kvcmpnbnmosngz7ou2poc",
+				"SQLLoginUsername": "sqladmin"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dmo",
+			"table": "Mapping"
+		}
+	}
+}

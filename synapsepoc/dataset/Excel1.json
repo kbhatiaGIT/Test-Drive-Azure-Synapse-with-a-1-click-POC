@@ -1,0 +1,1295 @@
+{
+	"name": "Excel1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage2",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "england_ks2final",
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "england_ks2final.xlsx",
+				"folderPath": "MappingDemo",
+				"fileSystem": "public"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "RECTYPE",
+				"type": "String"
+			},
+			{
+				"name": "ALPHAIND",
+				"type": "String"
+			},
+			{
+				"name": "LEA",
+				"type": "String"
+			},
+			{
+				"name": "ESTAB",
+				"type": "String"
+			},
+			{
+				"name": "URN",
+				"type": "String"
+			},
+			{
+				"name": "SCHNAME",
+				"type": "String"
+			},
+			{
+				"name": "ADDRESS1",
+				"type": "String"
+			},
+			{
+				"name": "ADDRESS2",
+				"type": "String"
+			},
+			{
+				"name": "ADDRESS3",
+				"type": "String"
+			},
+			{
+				"name": "TOWN",
+				"type": "String"
+			},
+			{
+				"name": "PCODE",
+				"type": "String"
+			},
+			{
+				"name": "TELNUM",
+				"type": "String"
+			},
+			{
+				"name": "PCON_CODE",
+				"type": "String"
+			},
+			{
+				"name": "PCON_NAME",
+				"type": "String"
+			},
+			{
+				"name": "URN_AC",
+				"type": "String"
+			},
+			{
+				"name": "SCHNAME_AC",
+				"type": "String"
+			},
+			{
+				"name": "OPEN_AC",
+				"type": "String"
+			},
+			{
+				"name": "NFTYPE",
+				"type": "String"
+			},
+			{
+				"name": "ICLOSE",
+				"type": "String"
+			},
+			{
+				"name": "RELDENOM",
+				"type": "String"
+			},
+			{
+				"name": "AGERANGE",
+				"type": "String"
+			},
+			{
+				"name": "CONFEXAM",
+				"type": "String"
+			},
+			{
+				"name": "TAB15",
+				"type": "String"
+			},
+			{
+				"name": "TAB1618",
+				"type": "String"
+			},
+			{
+				"name": "TOTPUPS",
+				"type": "String"
+			},
+			{
+				"name": "TPUPYEAR",
+				"type": "String"
+			},
+			{
+				"name": "TELIG",
+				"type": "String"
+			},
+			{
+				"name": "BELIG",
+				"type": "String"
+			},
+			{
+				"name": "GELIG",
+				"type": "String"
+			},
+			{
+				"name": "PBELIG",
+				"type": "String"
+			},
+			{
+				"name": "PGELIG",
+				"type": "String"
+			},
+			{
+				"name": "TKS1AVERAGE",
+				"type": "String"
+			},
+			{
+				"name": "TKS1GROUP_L",
+				"type": "String"
+			},
+			{
+				"name": "PTKS1GROUP_L",
+				"type": "String"
+			},
+			{
+				"name": "TKS1GROUP_M",
+				"type": "String"
+			},
+			{
+				"name": "PTKS1GROUP_M",
+				"type": "String"
+			},
+			{
+				"name": "TKS1GROUP_H",
+				"type": "String"
+			},
+			{
+				"name": "PTKS1GROUP_H",
+				"type": "String"
+			},
+			{
+				"name": "TKS1GROUP_NA",
+				"type": "String"
+			},
+			{
+				"name": "PTKS1GROUP_NA",
+				"type": "String"
+			},
+			{
+				"name": "TFSM6CLA1A",
+				"type": "String"
+			},
+			{
+				"name": "PTFSM6CLA1A",
+				"type": "String"
+			},
+			{
+				"name": "TNotFSM6CLA1A",
+				"type": "String"
+			},
+			{
+				"name": "PTNotFSM6CLA1A",
+				"type": "String"
+			},
+			{
+				"name": "TEALGRP2",
+				"type": "String"
+			},
+			{
+				"name": "PTEALGRP2",
+				"type": "String"
+			},
+			{
+				"name": "TMOBN",
+				"type": "String"
+			},
+			{
+				"name": "PTMOBN",
+				"type": "String"
+			},
+			{
+				"name": "PTRWM_EXP",
+				"type": "String"
+			},
+			{
+				"name": "PTRWM_HIGH",
+				"type": "String"
+			},
+			{
+				"name": "READPROG",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_LOWER",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_UPPER",
+				"type": "String"
+			},
+			{
+				"name": "READCOV",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_LOWER",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_UPPER",
+				"type": "String"
+			},
+			{
+				"name": "WRITCOV",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_LOWER",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_UPPER",
+				"type": "String"
+			},
+			{
+				"name": "MATCOV",
+				"type": "String"
+			},
+			{
+				"name": "PTREAD_EXP",
+				"type": "String"
+			},
+			{
+				"name": "PTREAD_HIGH",
+				"type": "String"
+			},
+			{
+				"name": "PTREAD_AT",
+				"type": "String"
+			},
+			{
+				"name": "READ_AVERAGE",
+				"type": "String"
+			},
+			{
+				"name": "PTGPS_EXP",
+				"type": "String"
+			},
+			{
+				"name": "PTGPS_HIGH",
+				"type": "String"
+			},
+			{
+				"name": "PTGPS_AT",
+				"type": "String"
+			},
+			{
+				"name": "GPS_AVERAGE",
+				"type": "String"
+			},
+			{
+				"name": "PTMAT_EXP",
+				"type": "String"
+			},
+			{
+				"name": "PTMAT_HIGH",
+				"type": "String"
+			},
+			{
+				"name": "PTMAT_AT",
+				"type": "String"
+			},
+			{
+				"name": "MAT_AVERAGE",
+				"type": "String"
+			},
+			{
+				"name": "PTWRITTA_EXP",
+				"type": "String"
+			},
+			{
+				"name": "PTWRITTA_HIGH",
+				"type": "String"
+			},
+			{
+				"name": "PTWRITTA_WTS",
+				"type": "String"
+			},
+			{
+				"name": "PTWRITTA_AD",
+				"type": "String"
+			},
+			{
+				"name": "PTSCITA_EXP",
+				"type": "String"
+			},
+			{
+				"name": "PTSCITA_AD",
+				"type": "String"
+			},
+			{
+				"name": "PTRWM_EXP_B",
+				"type": "String"
+			},
+			{
+				"name": "PTRWM_EXP_G",
+				"type": "String"
+			},
+			{
+				"name": "PTRWM_EXP_L",
+				"type": "String"
+			},
+			{
+				"name": "PTRWM_EXP_M",
+				"type": "String"
+			},
+			{
+				"name": "PTRWM_EXP_H",
+				"type": "String"
+			},
+			{
+				"name": "PTRWM_EXP_FSM6CLA1A",
+				"type": "String"
+			},
+			{
+				"name": "PTRWM_EXP_NotFSM6CLA1A",
+				"type": "String"
+			},
+			{
+				"name": "DIFFN_RWM_EXP",
+				"type": "String"
+			},
+			{
+				"name": "PTRWM_EXP_EAL",
+				"type": "String"
+			},
+			{
+				"name": "PTRWM_EXP_MOBN",
+				"type": "String"
+			},
+			{
+				"name": "PTRWM_HIGH_B",
+				"type": "String"
+			},
+			{
+				"name": "PTRWM_HIGH_G",
+				"type": "String"
+			},
+			{
+				"name": "PTRWM_HIGH_L",
+				"type": "String"
+			},
+			{
+				"name": "PTRWM_HIGH_M",
+				"type": "String"
+			},
+			{
+				"name": "PTRWM_HIGH_H",
+				"type": "String"
+			},
+			{
+				"name": "PTRWM_HIGH_FSM6CLA1A",
+				"type": "String"
+			},
+			{
+				"name": "PTRWM_HIGH_NotFSM6CLA1A",
+				"type": "String"
+			},
+			{
+				"name": "DIFFN_RWM_HIGH",
+				"type": "String"
+			},
+			{
+				"name": "PTRWM_HIGH_EAL",
+				"type": "String"
+			},
+			{
+				"name": "PTRWM_HIGH_MOBN",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_B",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_B_LOWER",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_B_UPPER",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_G",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_G_LOWER",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_G_UPPER",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_L",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_L_LOWER",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_L_UPPER",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_M",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_M_LOWER",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_M_UPPER",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_H",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_H_LOWER",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_H_UPPER",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_FSM6CLA1A",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_FSM6CLA1A_LOWER",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_FSM6CLA1A_UPPER",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_NotFSM6CLA1A",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_NotFSM6CLA1A_LOWER",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_NotFSM6CLA1A_UPPER",
+				"type": "String"
+			},
+			{
+				"name": "DIFFN_READPROG",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_EAL",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_EAL_LOWER",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_EAL_UPPER",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_MOBN",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_MOBN_LOWER",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_MOBN_UPPER",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_B",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_B_LOWER",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_B_UPPER",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_G",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_G_LOWER",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_G_UPPER",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_L",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_L_LOWER",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_L_UPPER",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_M",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_M_LOWER",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_M_UPPER",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_H",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_H_LOWER",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_H_UPPER",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_FSM6CLA1A",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_FSM6CLA1A_LOWER",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_FSM6CLA1A_UPPER",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_NotFSM6CLA1A",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_NotFSM6CLA1A_LOWER",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_NotFSM6CLA1A_UPPER",
+				"type": "String"
+			},
+			{
+				"name": "DIFFN_WRITPROG",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_EAL",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_EAL_LOWER",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_EAL_UPPER",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_MOBN",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_MOBN_LOWER",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_MOBN_UPPER",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_B",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_B_LOWER",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_B_UPPER",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_G",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_G_LOWER",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_G_UPPER",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_L",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_L_LOWER",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_L_UPPER",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_M",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_M_LOWER",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_M_UPPER",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_H",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_H_LOWER",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_H_UPPER",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_FSM6CLA1A",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_FSM6CLA1A_LOWER",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_FSM6CLA1A_UPPER",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_NotFSM6CLA1A",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_NotFSM6CLA1A_LOWER",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_NotFSM6CLA1A_UPPER",
+				"type": "String"
+			},
+			{
+				"name": "DIFFN_MATPROG",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_EAL",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_EAL_LOWER",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_EAL_UPPER",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_MOBN",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_MOBN_LOWER",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_MOBN_UPPER",
+				"type": "String"
+			},
+			{
+				"name": "READ_AVERAGE_B",
+				"type": "String"
+			},
+			{
+				"name": "READ_AVERAGE_G",
+				"type": "String"
+			},
+			{
+				"name": "READ_AVERAGE_L",
+				"type": "String"
+			},
+			{
+				"name": "READ_AVERAGE_M",
+				"type": "String"
+			},
+			{
+				"name": "READ_AVERAGE_H",
+				"type": "String"
+			},
+			{
+				"name": "READ_AVERAGE_FSM6CLA1A",
+				"type": "String"
+			},
+			{
+				"name": "READ_AVERAGE_NotFSM6CLA1A",
+				"type": "String"
+			},
+			{
+				"name": "READ_AVERAGE_EAL",
+				"type": "String"
+			},
+			{
+				"name": "READ_AVERAGE_MOBN",
+				"type": "String"
+			},
+			{
+				"name": "MAT_AVERAGE_B",
+				"type": "String"
+			},
+			{
+				"name": "MAT_AVERAGE_G",
+				"type": "String"
+			},
+			{
+				"name": "MAT_AVERAGE_L",
+				"type": "String"
+			},
+			{
+				"name": "MAT_AVERAGE_M",
+				"type": "String"
+			},
+			{
+				"name": "MAT_AVERAGE_H",
+				"type": "String"
+			},
+			{
+				"name": "MAT_AVERAGE_FSM6CLA1A",
+				"type": "String"
+			},
+			{
+				"name": "MAT_AVERAGE_NotFSM6CLA1A",
+				"type": "String"
+			},
+			{
+				"name": "MAT_AVERAGE_EAL",
+				"type": "String"
+			},
+			{
+				"name": "MAT_AVERAGE_MOBN",
+				"type": "String"
+			},
+			{
+				"name": "GPS_AVERAGE_B",
+				"type": "String"
+			},
+			{
+				"name": "GPS_AVERAGE_G",
+				"type": "String"
+			},
+			{
+				"name": "GPS_AVERAGE_L",
+				"type": "String"
+			},
+			{
+				"name": "GPS_AVERAGE_M",
+				"type": "String"
+			},
+			{
+				"name": "GPS_AVERAGE_H",
+				"type": "String"
+			},
+			{
+				"name": "GPS_AVERAGE_FSM6CLA1A",
+				"type": "String"
+			},
+			{
+				"name": "GPS_AVERAGE_NotFSM6CLA1A",
+				"type": "String"
+			},
+			{
+				"name": "GPS_AVERAGE_EAL",
+				"type": "String"
+			},
+			{
+				"name": "GPS_AVERAGE_MOBN",
+				"type": "String"
+			},
+			{
+				"name": "PTREAD_EXP_L",
+				"type": "String"
+			},
+			{
+				"name": "PTREAD_EXP_M",
+				"type": "String"
+			},
+			{
+				"name": "PTREAD_EXP_H",
+				"type": "String"
+			},
+			{
+				"name": "PTREAD_EXP_FSM6CLA1A",
+				"type": "String"
+			},
+			{
+				"name": "PTREAD_EXP_NotFSM6CLA1A",
+				"type": "String"
+			},
+			{
+				"name": "PTGPS_EXP_L",
+				"type": "String"
+			},
+			{
+				"name": "PTGPS_EXP_M",
+				"type": "String"
+			},
+			{
+				"name": "PTGPS_EXP_H",
+				"type": "String"
+			},
+			{
+				"name": "PTGPS_EXP_FSM6CLA1A",
+				"type": "String"
+			},
+			{
+				"name": "PTGPS_EXP_NotFSM6CLA1A",
+				"type": "String"
+			},
+			{
+				"name": "PTMAT_EXP_L",
+				"type": "String"
+			},
+			{
+				"name": "PTMAT_EXP_M",
+				"type": "String"
+			},
+			{
+				"name": "PTMAT_EXP_H",
+				"type": "String"
+			},
+			{
+				"name": "PTMAT_EXP_FSM6CLA1A",
+				"type": "String"
+			},
+			{
+				"name": "PTMAT_EXP_NotFSM6CLA1A",
+				"type": "String"
+			},
+			{
+				"name": "PTWRITTA_EXP_L",
+				"type": "String"
+			},
+			{
+				"name": "PTWRITTA_EXP_M",
+				"type": "String"
+			},
+			{
+				"name": "PTWRITTA_EXP_H",
+				"type": "String"
+			},
+			{
+				"name": "PTWRITTA_EXP_FSM6CLA1A",
+				"type": "String"
+			},
+			{
+				"name": "PTWRITTA_EXP_NotFSM6CLA1A",
+				"type": "String"
+			},
+			{
+				"name": "PTREAD_HIGH_L",
+				"type": "String"
+			},
+			{
+				"name": "PTREAD_HIGH_M",
+				"type": "String"
+			},
+			{
+				"name": "PTREAD_HIGH_H",
+				"type": "String"
+			},
+			{
+				"name": "PTREAD_HIGH_FSM6CLA1A",
+				"type": "String"
+			},
+			{
+				"name": "PTREAD_HIGH_NotFSM6CLA1A",
+				"type": "String"
+			},
+			{
+				"name": "PTGPS_HIGH_L",
+				"type": "String"
+			},
+			{
+				"name": "PTGPS_HIGH_M",
+				"type": "String"
+			},
+			{
+				"name": "PTGPS_HIGH_H",
+				"type": "String"
+			},
+			{
+				"name": "PTGPS_HIGH_FSM6CLA1A",
+				"type": "String"
+			},
+			{
+				"name": "PTGPS_HIGH_NotFSM6CLA1A",
+				"type": "String"
+			},
+			{
+				"name": "PTMAT_HIGH_L",
+				"type": "String"
+			},
+			{
+				"name": "PTMAT_HIGH_M",
+				"type": "String"
+			},
+			{
+				"name": "PTMAT_HIGH_H",
+				"type": "String"
+			},
+			{
+				"name": "PTMAT_HIGH_FSM6CLA1A",
+				"type": "String"
+			},
+			{
+				"name": "PTMAT_HIGH_NotFSM6CLA1A",
+				"type": "String"
+			},
+			{
+				"name": "PTWRITTA_HIGH_L",
+				"type": "String"
+			},
+			{
+				"name": "PTWRITTA_HIGH_M",
+				"type": "String"
+			},
+			{
+				"name": "PTWRITTA_HIGH_H",
+				"type": "String"
+			},
+			{
+				"name": "PTWRITTA_HIGH_FSM6CLA1A",
+				"type": "String"
+			},
+			{
+				"name": "PTWRITTA_HIGH_NotFSM6CLA1A",
+				"type": "String"
+			},
+			{
+				"name": "TEALGRP1",
+				"type": "String"
+			},
+			{
+				"name": "PTEALGRP1",
+				"type": "String"
+			},
+			{
+				"name": "TEALGRP3",
+				"type": "String"
+			},
+			{
+				"name": "PTEALGRP3",
+				"type": "String"
+			},
+			{
+				"name": "TSENELE",
+				"type": "String"
+			},
+			{
+				"name": "PSENELE",
+				"type": "String"
+			},
+			{
+				"name": "TSENELK",
+				"type": "String"
+			},
+			{
+				"name": "PSENELK",
+				"type": "String"
+			},
+			{
+				"name": "TSENELEK",
+				"type": "String"
+			},
+			{
+				"name": "PSENELEK",
+				"type": "String"
+			},
+			{
+				"name": "TELIG_18",
+				"type": "String"
+			},
+			{
+				"name": "PTFSM6CLA1A_18",
+				"type": "String"
+			},
+			{
+				"name": "PTNOTFSM6CLA1A_18",
+				"type": "String"
+			},
+			{
+				"name": "PTRWM_EXP_18",
+				"type": "String"
+			},
+			{
+				"name": "PTRWM_HIGH_18",
+				"type": "String"
+			},
+			{
+				"name": "PTRWM_EXP_FSM6CLA1A_18",
+				"type": "String"
+			},
+			{
+				"name": "PTRWM_HIGH_FSM6CLA1A_18",
+				"type": "String"
+			},
+			{
+				"name": "PTRWM_EXP_NotFSM6CLA1A_18",
+				"type": "String"
+			},
+			{
+				"name": "PTRWM_HIGH_NotFSM6CLA1A_18",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_18",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_LOWER_18",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_UPPER_18",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_18",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_LOWER_18",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_UPPER_18",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_18",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_LOWER_18",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_UPPER_18",
+				"type": "String"
+			},
+			{
+				"name": "READ_AVERAGE_18",
+				"type": "String"
+			},
+			{
+				"name": "MAT_AVERAGE_18",
+				"type": "String"
+			},
+			{
+				"name": "TELIG_17",
+				"type": "String"
+			},
+			{
+				"name": "PTFSM6CLA1A_17",
+				"type": "String"
+			},
+			{
+				"name": "PTNOTFSM6CLA1A_17",
+				"type": "String"
+			},
+			{
+				"name": "PTRWM_EXP_17",
+				"type": "String"
+			},
+			{
+				"name": "PTRWM_HIGH_17",
+				"type": "String"
+			},
+			{
+				"name": "PTRWM_EXP_FSM6CLA1A_17",
+				"type": "String"
+			},
+			{
+				"name": "PTRWM_HIGH_FSM6CLA1A_17",
+				"type": "String"
+			},
+			{
+				"name": "PTRWM_EXP_NotFSM6CLA1A_17",
+				"type": "String"
+			},
+			{
+				"name": "PTRWM_HIGH_NotFSM6CLA1A_17",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_17",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_LOWER_17",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_UPPER_17",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_17",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_LOWER_17",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_UPPER_17",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_17",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_LOWER_17",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_UPPER_17",
+				"type": "String"
+			},
+			{
+				"name": "READ_AVERAGE_17",
+				"type": "String"
+			},
+			{
+				"name": "MAT_AVERAGE_17",
+				"type": "String"
+			},
+			{
+				"name": "TELIG_3YR",
+				"type": "String"
+			},
+			{
+				"name": "PTRWM_EXP_3YR",
+				"type": "String"
+			},
+			{
+				"name": "PTRWM_HIGH_3YR",
+				"type": "String"
+			},
+			{
+				"name": "READ_AVERAGE_3YR",
+				"type": "String"
+			},
+			{
+				"name": "MAT_AVERAGE_3YR",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_UNADJUSTED",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_UNADJUSTED",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_UNADJUSTED",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_DESCR_17",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_DESCR_17",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_DESCR_17",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_DESCR_18",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_DESCR_18",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_DESCR_18",
+				"type": "String"
+			},
+			{
+				"name": "READPROG_DESCR",
+				"type": "String"
+			},
+			{
+				"name": "WRITPROG_DESCR",
+				"type": "String"
+			},
+			{
+				"name": "MATPROG_DESCR",
+				"type": "String"
+			}
+		]
+	}
+}
