@@ -23,7 +23,8 @@
 						"linkedService": {
 							"referenceName": "AzureDataLakeStorage1",
 							"type": "LinkedServiceReference"
-						}
+						},
+						"folderPath": "public/MappingDemooutput"
 					},
 					"compute": {
 						"coreCount": 8,
