@@ -15,7 +15,7 @@
 		"type": "AzureSqlDWTable",
 		"schema": [],
 		"typeProperties": {
-			"schema": "dmo",
+			"schema": "dbo",
 			"table": "Mapping"
 		}
 	}
