@@ -7,9 +7,25 @@
 			"metadata": "Workspace name",
 			"defaultValue": "cmpnbnmosngz7ou2pocws1"
 		},
+		"AzureDataLakeStorage1_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
+		},
+		"AzureDataLakeStorage2_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage2'"
+		},
 		"TripFaresSynapseAnalyticsLinkedService_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'TripFaresSynapseAnalyticsLinkedService'"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://cmpnbnmosngz7ou2poc.dfs.core.windows.net/"
+		},
+		"AzureDataLakeStorage2_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://cmpnbnmosngz7ou2poc.dfs.core.windows.net/"
 		},
 		"HttpServerTripDataLinkedService_properties_typeProperties_url": {
 			"type": "string",
@@ -32,6 +48,62 @@
 		"workspaceId": "[concat('Microsoft.Synapse/workspaces/', parameters('workspaceName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('workspaceName'), '/MappingDemo')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "DataFlow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Dataflow1",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {},
+									"sink2": {}
+								}
+							},
+							"staging": {
+								"linkedService": {
+									"referenceName": "AzureDataLakeStorage1",
+									"type": "LinkedServiceReference"
+								},
+								"folderPath": "public/MappingDemooutput"
+							},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/dataflows/Dataflow1')]",
+				"[concat(variables('workspaceId'), '/linkedServices/AzureDataLakeStorage1')]",
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/TripFaresDataPipeline')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
@@ -618,6 +690,33 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/AzureSynapseAnalyticsTable2')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "TripFaresSynapseAnalyticsLinkedService",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"SynapseWorkspaceName": "cmpnbnmosngz7ou2pocws1.database.windows.net",
+						"SQLDedicatedPoolName": "cmpnbnmosngz7ou2pocws1p1",
+						"keyVaultName": "kvcmpnbnmosngz7ou2poc",
+						"SQLLoginUsername": "sqladmin"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlDWTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dmo",
+					"table": "Mapping"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/TripFaresSynapseAnalyticsLinkedService')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/AzureSynapseAnalyticsTripsData')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
@@ -667,6 +766,1331 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/linkedServices/TripFaresSynapseAnalyticsLinkedService')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Excel1')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage2",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Excel",
+				"typeProperties": {
+					"sheetName": "england_ks2final",
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "england_ks2final.xlsx",
+						"folderPath": "MappingDemo",
+						"fileSystem": "public"
+					},
+					"firstRowAsHeader": true
+				},
+				"schema": [
+					{
+						"name": "RECTYPE",
+						"type": "String"
+					},
+					{
+						"name": "ALPHAIND",
+						"type": "String"
+					},
+					{
+						"name": "LEA",
+						"type": "String"
+					},
+					{
+						"name": "ESTAB",
+						"type": "String"
+					},
+					{
+						"name": "URN",
+						"type": "String"
+					},
+					{
+						"name": "SCHNAME",
+						"type": "String"
+					},
+					{
+						"name": "ADDRESS1",
+						"type": "String"
+					},
+					{
+						"name": "ADDRESS2",
+						"type": "String"
+					},
+					{
+						"name": "ADDRESS3",
+						"type": "String"
+					},
+					{
+						"name": "TOWN",
+						"type": "String"
+					},
+					{
+						"name": "PCODE",
+						"type": "String"
+					},
+					{
+						"name": "TELNUM",
+						"type": "String"
+					},
+					{
+						"name": "PCON_CODE",
+						"type": "String"
+					},
+					{
+						"name": "PCON_NAME",
+						"type": "String"
+					},
+					{
+						"name": "URN_AC",
+						"type": "String"
+					},
+					{
+						"name": "SCHNAME_AC",
+						"type": "String"
+					},
+					{
+						"name": "OPEN_AC",
+						"type": "String"
+					},
+					{
+						"name": "NFTYPE",
+						"type": "String"
+					},
+					{
+						"name": "ICLOSE",
+						"type": "String"
+					},
+					{
+						"name": "RELDENOM",
+						"type": "String"
+					},
+					{
+						"name": "AGERANGE",
+						"type": "String"
+					},
+					{
+						"name": "CONFEXAM",
+						"type": "String"
+					},
+					{
+						"name": "TAB15",
+						"type": "String"
+					},
+					{
+						"name": "TAB1618",
+						"type": "String"
+					},
+					{
+						"name": "TOTPUPS",
+						"type": "String"
+					},
+					{
+						"name": "TPUPYEAR",
+						"type": "String"
+					},
+					{
+						"name": "TELIG",
+						"type": "String"
+					},
+					{
+						"name": "BELIG",
+						"type": "String"
+					},
+					{
+						"name": "GELIG",
+						"type": "String"
+					},
+					{
+						"name": "PBELIG",
+						"type": "String"
+					},
+					{
+						"name": "PGELIG",
+						"type": "String"
+					},
+					{
+						"name": "TKS1AVERAGE",
+						"type": "String"
+					},
+					{
+						"name": "TKS1GROUP_L",
+						"type": "String"
+					},
+					{
+						"name": "PTKS1GROUP_L",
+						"type": "String"
+					},
+					{
+						"name": "TKS1GROUP_M",
+						"type": "String"
+					},
+					{
+						"name": "PTKS1GROUP_M",
+						"type": "String"
+					},
+					{
+						"name": "TKS1GROUP_H",
+						"type": "String"
+					},
+					{
+						"name": "PTKS1GROUP_H",
+						"type": "String"
+					},
+					{
+						"name": "TKS1GROUP_NA",
+						"type": "String"
+					},
+					{
+						"name": "PTKS1GROUP_NA",
+						"type": "String"
+					},
+					{
+						"name": "TFSM6CLA1A",
+						"type": "String"
+					},
+					{
+						"name": "PTFSM6CLA1A",
+						"type": "String"
+					},
+					{
+						"name": "TNotFSM6CLA1A",
+						"type": "String"
+					},
+					{
+						"name": "PTNotFSM6CLA1A",
+						"type": "String"
+					},
+					{
+						"name": "TEALGRP2",
+						"type": "String"
+					},
+					{
+						"name": "PTEALGRP2",
+						"type": "String"
+					},
+					{
+						"name": "TMOBN",
+						"type": "String"
+					},
+					{
+						"name": "PTMOBN",
+						"type": "String"
+					},
+					{
+						"name": "PTRWM_EXP",
+						"type": "String"
+					},
+					{
+						"name": "PTRWM_HIGH",
+						"type": "String"
+					},
+					{
+						"name": "READPROG",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_LOWER",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_UPPER",
+						"type": "String"
+					},
+					{
+						"name": "READCOV",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_LOWER",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_UPPER",
+						"type": "String"
+					},
+					{
+						"name": "WRITCOV",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_LOWER",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_UPPER",
+						"type": "String"
+					},
+					{
+						"name": "MATCOV",
+						"type": "String"
+					},
+					{
+						"name": "PTREAD_EXP",
+						"type": "String"
+					},
+					{
+						"name": "PTREAD_HIGH",
+						"type": "String"
+					},
+					{
+						"name": "PTREAD_AT",
+						"type": "String"
+					},
+					{
+						"name": "READ_AVERAGE",
+						"type": "String"
+					},
+					{
+						"name": "PTGPS_EXP",
+						"type": "String"
+					},
+					{
+						"name": "PTGPS_HIGH",
+						"type": "String"
+					},
+					{
+						"name": "PTGPS_AT",
+						"type": "String"
+					},
+					{
+						"name": "GPS_AVERAGE",
+						"type": "String"
+					},
+					{
+						"name": "PTMAT_EXP",
+						"type": "String"
+					},
+					{
+						"name": "PTMAT_HIGH",
+						"type": "String"
+					},
+					{
+						"name": "PTMAT_AT",
+						"type": "String"
+					},
+					{
+						"name": "MAT_AVERAGE",
+						"type": "String"
+					},
+					{
+						"name": "PTWRITTA_EXP",
+						"type": "String"
+					},
+					{
+						"name": "PTWRITTA_HIGH",
+						"type": "String"
+					},
+					{
+						"name": "PTWRITTA_WTS",
+						"type": "String"
+					},
+					{
+						"name": "PTWRITTA_AD",
+						"type": "String"
+					},
+					{
+						"name": "PTSCITA_EXP",
+						"type": "String"
+					},
+					{
+						"name": "PTSCITA_AD",
+						"type": "String"
+					},
+					{
+						"name": "PTRWM_EXP_B",
+						"type": "String"
+					},
+					{
+						"name": "PTRWM_EXP_G",
+						"type": "String"
+					},
+					{
+						"name": "PTRWM_EXP_L",
+						"type": "String"
+					},
+					{
+						"name": "PTRWM_EXP_M",
+						"type": "String"
+					},
+					{
+						"name": "PTRWM_EXP_H",
+						"type": "String"
+					},
+					{
+						"name": "PTRWM_EXP_FSM6CLA1A",
+						"type": "String"
+					},
+					{
+						"name": "PTRWM_EXP_NotFSM6CLA1A",
+						"type": "String"
+					},
+					{
+						"name": "DIFFN_RWM_EXP",
+						"type": "String"
+					},
+					{
+						"name": "PTRWM_EXP_EAL",
+						"type": "String"
+					},
+					{
+						"name": "PTRWM_EXP_MOBN",
+						"type": "String"
+					},
+					{
+						"name": "PTRWM_HIGH_B",
+						"type": "String"
+					},
+					{
+						"name": "PTRWM_HIGH_G",
+						"type": "String"
+					},
+					{
+						"name": "PTRWM_HIGH_L",
+						"type": "String"
+					},
+					{
+						"name": "PTRWM_HIGH_M",
+						"type": "String"
+					},
+					{
+						"name": "PTRWM_HIGH_H",
+						"type": "String"
+					},
+					{
+						"name": "PTRWM_HIGH_FSM6CLA1A",
+						"type": "String"
+					},
+					{
+						"name": "PTRWM_HIGH_NotFSM6CLA1A",
+						"type": "String"
+					},
+					{
+						"name": "DIFFN_RWM_HIGH",
+						"type": "String"
+					},
+					{
+						"name": "PTRWM_HIGH_EAL",
+						"type": "String"
+					},
+					{
+						"name": "PTRWM_HIGH_MOBN",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_B",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_B_LOWER",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_B_UPPER",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_G",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_G_LOWER",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_G_UPPER",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_L",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_L_LOWER",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_L_UPPER",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_M",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_M_LOWER",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_M_UPPER",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_H",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_H_LOWER",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_H_UPPER",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_FSM6CLA1A",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_FSM6CLA1A_LOWER",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_FSM6CLA1A_UPPER",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_NotFSM6CLA1A",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_NotFSM6CLA1A_LOWER",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_NotFSM6CLA1A_UPPER",
+						"type": "String"
+					},
+					{
+						"name": "DIFFN_READPROG",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_EAL",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_EAL_LOWER",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_EAL_UPPER",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_MOBN",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_MOBN_LOWER",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_MOBN_UPPER",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_B",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_B_LOWER",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_B_UPPER",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_G",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_G_LOWER",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_G_UPPER",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_L",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_L_LOWER",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_L_UPPER",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_M",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_M_LOWER",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_M_UPPER",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_H",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_H_LOWER",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_H_UPPER",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_FSM6CLA1A",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_FSM6CLA1A_LOWER",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_FSM6CLA1A_UPPER",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_NotFSM6CLA1A",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_NotFSM6CLA1A_LOWER",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_NotFSM6CLA1A_UPPER",
+						"type": "String"
+					},
+					{
+						"name": "DIFFN_WRITPROG",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_EAL",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_EAL_LOWER",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_EAL_UPPER",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_MOBN",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_MOBN_LOWER",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_MOBN_UPPER",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_B",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_B_LOWER",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_B_UPPER",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_G",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_G_LOWER",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_G_UPPER",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_L",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_L_LOWER",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_L_UPPER",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_M",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_M_LOWER",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_M_UPPER",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_H",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_H_LOWER",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_H_UPPER",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_FSM6CLA1A",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_FSM6CLA1A_LOWER",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_FSM6CLA1A_UPPER",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_NotFSM6CLA1A",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_NotFSM6CLA1A_LOWER",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_NotFSM6CLA1A_UPPER",
+						"type": "String"
+					},
+					{
+						"name": "DIFFN_MATPROG",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_EAL",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_EAL_LOWER",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_EAL_UPPER",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_MOBN",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_MOBN_LOWER",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_MOBN_UPPER",
+						"type": "String"
+					},
+					{
+						"name": "READ_AVERAGE_B",
+						"type": "String"
+					},
+					{
+						"name": "READ_AVERAGE_G",
+						"type": "String"
+					},
+					{
+						"name": "READ_AVERAGE_L",
+						"type": "String"
+					},
+					{
+						"name": "READ_AVERAGE_M",
+						"type": "String"
+					},
+					{
+						"name": "READ_AVERAGE_H",
+						"type": "String"
+					},
+					{
+						"name": "READ_AVERAGE_FSM6CLA1A",
+						"type": "String"
+					},
+					{
+						"name": "READ_AVERAGE_NotFSM6CLA1A",
+						"type": "String"
+					},
+					{
+						"name": "READ_AVERAGE_EAL",
+						"type": "String"
+					},
+					{
+						"name": "READ_AVERAGE_MOBN",
+						"type": "String"
+					},
+					{
+						"name": "MAT_AVERAGE_B",
+						"type": "String"
+					},
+					{
+						"name": "MAT_AVERAGE_G",
+						"type": "String"
+					},
+					{
+						"name": "MAT_AVERAGE_L",
+						"type": "String"
+					},
+					{
+						"name": "MAT_AVERAGE_M",
+						"type": "String"
+					},
+					{
+						"name": "MAT_AVERAGE_H",
+						"type": "String"
+					},
+					{
+						"name": "MAT_AVERAGE_FSM6CLA1A",
+						"type": "String"
+					},
+					{
+						"name": "MAT_AVERAGE_NotFSM6CLA1A",
+						"type": "String"
+					},
+					{
+						"name": "MAT_AVERAGE_EAL",
+						"type": "String"
+					},
+					{
+						"name": "MAT_AVERAGE_MOBN",
+						"type": "String"
+					},
+					{
+						"name": "GPS_AVERAGE_B",
+						"type": "String"
+					},
+					{
+						"name": "GPS_AVERAGE_G",
+						"type": "String"
+					},
+					{
+						"name": "GPS_AVERAGE_L",
+						"type": "String"
+					},
+					{
+						"name": "GPS_AVERAGE_M",
+						"type": "String"
+					},
+					{
+						"name": "GPS_AVERAGE_H",
+						"type": "String"
+					},
+					{
+						"name": "GPS_AVERAGE_FSM6CLA1A",
+						"type": "String"
+					},
+					{
+						"name": "GPS_AVERAGE_NotFSM6CLA1A",
+						"type": "String"
+					},
+					{
+						"name": "GPS_AVERAGE_EAL",
+						"type": "String"
+					},
+					{
+						"name": "GPS_AVERAGE_MOBN",
+						"type": "String"
+					},
+					{
+						"name": "PTREAD_EXP_L",
+						"type": "String"
+					},
+					{
+						"name": "PTREAD_EXP_M",
+						"type": "String"
+					},
+					{
+						"name": "PTREAD_EXP_H",
+						"type": "String"
+					},
+					{
+						"name": "PTREAD_EXP_FSM6CLA1A",
+						"type": "String"
+					},
+					{
+						"name": "PTREAD_EXP_NotFSM6CLA1A",
+						"type": "String"
+					},
+					{
+						"name": "PTGPS_EXP_L",
+						"type": "String"
+					},
+					{
+						"name": "PTGPS_EXP_M",
+						"type": "String"
+					},
+					{
+						"name": "PTGPS_EXP_H",
+						"type": "String"
+					},
+					{
+						"name": "PTGPS_EXP_FSM6CLA1A",
+						"type": "String"
+					},
+					{
+						"name": "PTGPS_EXP_NotFSM6CLA1A",
+						"type": "String"
+					},
+					{
+						"name": "PTMAT_EXP_L",
+						"type": "String"
+					},
+					{
+						"name": "PTMAT_EXP_M",
+						"type": "String"
+					},
+					{
+						"name": "PTMAT_EXP_H",
+						"type": "String"
+					},
+					{
+						"name": "PTMAT_EXP_FSM6CLA1A",
+						"type": "String"
+					},
+					{
+						"name": "PTMAT_EXP_NotFSM6CLA1A",
+						"type": "String"
+					},
+					{
+						"name": "PTWRITTA_EXP_L",
+						"type": "String"
+					},
+					{
+						"name": "PTWRITTA_EXP_M",
+						"type": "String"
+					},
+					{
+						"name": "PTWRITTA_EXP_H",
+						"type": "String"
+					},
+					{
+						"name": "PTWRITTA_EXP_FSM6CLA1A",
+						"type": "String"
+					},
+					{
+						"name": "PTWRITTA_EXP_NotFSM6CLA1A",
+						"type": "String"
+					},
+					{
+						"name": "PTREAD_HIGH_L",
+						"type": "String"
+					},
+					{
+						"name": "PTREAD_HIGH_M",
+						"type": "String"
+					},
+					{
+						"name": "PTREAD_HIGH_H",
+						"type": "String"
+					},
+					{
+						"name": "PTREAD_HIGH_FSM6CLA1A",
+						"type": "String"
+					},
+					{
+						"name": "PTREAD_HIGH_NotFSM6CLA1A",
+						"type": "String"
+					},
+					{
+						"name": "PTGPS_HIGH_L",
+						"type": "String"
+					},
+					{
+						"name": "PTGPS_HIGH_M",
+						"type": "String"
+					},
+					{
+						"name": "PTGPS_HIGH_H",
+						"type": "String"
+					},
+					{
+						"name": "PTGPS_HIGH_FSM6CLA1A",
+						"type": "String"
+					},
+					{
+						"name": "PTGPS_HIGH_NotFSM6CLA1A",
+						"type": "String"
+					},
+					{
+						"name": "PTMAT_HIGH_L",
+						"type": "String"
+					},
+					{
+						"name": "PTMAT_HIGH_M",
+						"type": "String"
+					},
+					{
+						"name": "PTMAT_HIGH_H",
+						"type": "String"
+					},
+					{
+						"name": "PTMAT_HIGH_FSM6CLA1A",
+						"type": "String"
+					},
+					{
+						"name": "PTMAT_HIGH_NotFSM6CLA1A",
+						"type": "String"
+					},
+					{
+						"name": "PTWRITTA_HIGH_L",
+						"type": "String"
+					},
+					{
+						"name": "PTWRITTA_HIGH_M",
+						"type": "String"
+					},
+					{
+						"name": "PTWRITTA_HIGH_H",
+						"type": "String"
+					},
+					{
+						"name": "PTWRITTA_HIGH_FSM6CLA1A",
+						"type": "String"
+					},
+					{
+						"name": "PTWRITTA_HIGH_NotFSM6CLA1A",
+						"type": "String"
+					},
+					{
+						"name": "TEALGRP1",
+						"type": "String"
+					},
+					{
+						"name": "PTEALGRP1",
+						"type": "String"
+					},
+					{
+						"name": "TEALGRP3",
+						"type": "String"
+					},
+					{
+						"name": "PTEALGRP3",
+						"type": "String"
+					},
+					{
+						"name": "TSENELE",
+						"type": "String"
+					},
+					{
+						"name": "PSENELE",
+						"type": "String"
+					},
+					{
+						"name": "TSENELK",
+						"type": "String"
+					},
+					{
+						"name": "PSENELK",
+						"type": "String"
+					},
+					{
+						"name": "TSENELEK",
+						"type": "String"
+					},
+					{
+						"name": "PSENELEK",
+						"type": "String"
+					},
+					{
+						"name": "TELIG_18",
+						"type": "String"
+					},
+					{
+						"name": "PTFSM6CLA1A_18",
+						"type": "String"
+					},
+					{
+						"name": "PTNOTFSM6CLA1A_18",
+						"type": "String"
+					},
+					{
+						"name": "PTRWM_EXP_18",
+						"type": "String"
+					},
+					{
+						"name": "PTRWM_HIGH_18",
+						"type": "String"
+					},
+					{
+						"name": "PTRWM_EXP_FSM6CLA1A_18",
+						"type": "String"
+					},
+					{
+						"name": "PTRWM_HIGH_FSM6CLA1A_18",
+						"type": "String"
+					},
+					{
+						"name": "PTRWM_EXP_NotFSM6CLA1A_18",
+						"type": "String"
+					},
+					{
+						"name": "PTRWM_HIGH_NotFSM6CLA1A_18",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_18",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_LOWER_18",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_UPPER_18",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_18",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_LOWER_18",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_UPPER_18",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_18",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_LOWER_18",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_UPPER_18",
+						"type": "String"
+					},
+					{
+						"name": "READ_AVERAGE_18",
+						"type": "String"
+					},
+					{
+						"name": "MAT_AVERAGE_18",
+						"type": "String"
+					},
+					{
+						"name": "TELIG_17",
+						"type": "String"
+					},
+					{
+						"name": "PTFSM6CLA1A_17",
+						"type": "String"
+					},
+					{
+						"name": "PTNOTFSM6CLA1A_17",
+						"type": "String"
+					},
+					{
+						"name": "PTRWM_EXP_17",
+						"type": "String"
+					},
+					{
+						"name": "PTRWM_HIGH_17",
+						"type": "String"
+					},
+					{
+						"name": "PTRWM_EXP_FSM6CLA1A_17",
+						"type": "String"
+					},
+					{
+						"name": "PTRWM_HIGH_FSM6CLA1A_17",
+						"type": "String"
+					},
+					{
+						"name": "PTRWM_EXP_NotFSM6CLA1A_17",
+						"type": "String"
+					},
+					{
+						"name": "PTRWM_HIGH_NotFSM6CLA1A_17",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_17",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_LOWER_17",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_UPPER_17",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_17",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_LOWER_17",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_UPPER_17",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_17",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_LOWER_17",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_UPPER_17",
+						"type": "String"
+					},
+					{
+						"name": "READ_AVERAGE_17",
+						"type": "String"
+					},
+					{
+						"name": "MAT_AVERAGE_17",
+						"type": "String"
+					},
+					{
+						"name": "TELIG_3YR",
+						"type": "String"
+					},
+					{
+						"name": "PTRWM_EXP_3YR",
+						"type": "String"
+					},
+					{
+						"name": "PTRWM_HIGH_3YR",
+						"type": "String"
+					},
+					{
+						"name": "READ_AVERAGE_3YR",
+						"type": "String"
+					},
+					{
+						"name": "MAT_AVERAGE_3YR",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_UNADJUSTED",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_UNADJUSTED",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_UNADJUSTED",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_DESCR_17",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_DESCR_17",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_DESCR_17",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_DESCR_18",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_DESCR_18",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_DESCR_18",
+						"type": "String"
+					},
+					{
+						"name": "READPROG_DESCR",
+						"type": "String"
+					},
+					{
+						"name": "WRITPROG_DESCR",
+						"type": "String"
+					},
+					{
+						"name": "MATPROG_DESCR",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/AzureDataLakeStorage2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Parquet1')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "MappingDemooutput",
+						"fileSystem": "public"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/AzureDataLakeStorage1')]"
 			]
 		},
 		{
@@ -1045,6 +2469,52 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/AzureDataLakeStorage1')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('AzureDataLakeStorage1_accountKey')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/AzureDataLakeStorage2')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('AzureDataLakeStorage2_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('AzureDataLakeStorage2_accountKey')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/HttpServerTripDataLinkedService')]",
 			"type": "Microsoft.Synapse/workspaces/linkedServices",
 			"apiVersion": "2019-06-01-preview",
@@ -1220,7 +2690,11 @@
 						"dataFlowProperties": {
 							"computeType": "General",
 							"coreCount": 8,
-							"timeToLive": 0
+							"timeToLive": 0,
+							"cleanup": true
+						},
+						"pipelineExternalComputeScaleProperties": {
+							"timeToLive": 60
 						}
 					}
 				},
@@ -1231,6 +2705,403 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/managedVirtualNetworks/default')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Dataflow1')]",
+			"type": "Microsoft.Synapse/workspaces/dataflows",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Excel1",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "Parquet1",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						},
+						{
+							"dataset": {
+								"referenceName": "AzureSynapseAnalyticsTable2",
+								"type": "DatasetReference"
+							},
+							"name": "sink2"
+						}
+					],
+					"transformations": [
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "aggregate1",
+							"description": "Aggregating data by 'pcode_short' producing columns 'total_count'"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          RECTYPE as string,",
+						"          ALPHAIND as string,",
+						"          LEA as string,",
+						"          ESTAB as string,",
+						"          URN as string,",
+						"          SCHNAME as string,",
+						"          ADDRESS1 as string,",
+						"          ADDRESS2 as string,",
+						"          ADDRESS3 as string,",
+						"          TOWN as string,",
+						"          PCODE as string,",
+						"          TELNUM as string,",
+						"          PCON_CODE as string,",
+						"          PCON_NAME as string,",
+						"          URN_AC as string,",
+						"          SCHNAME_AC as string,",
+						"          OPEN_AC as string,",
+						"          NFTYPE as string,",
+						"          ICLOSE as string,",
+						"          RELDENOM as string,",
+						"          AGERANGE as string,",
+						"          CONFEXAM as string,",
+						"          TAB15 as string,",
+						"          TAB1618 as string,",
+						"          TOTPUPS as string,",
+						"          TPUPYEAR as string,",
+						"          TELIG as string,",
+						"          BELIG as string,",
+						"          GELIG as string,",
+						"          PBELIG as string,",
+						"          PGELIG as string,",
+						"          TKS1AVERAGE as string,",
+						"          TKS1GROUP_L as string,",
+						"          PTKS1GROUP_L as string,",
+						"          TKS1GROUP_M as string,",
+						"          PTKS1GROUP_M as string,",
+						"          TKS1GROUP_H as string,",
+						"          PTKS1GROUP_H as string,",
+						"          TKS1GROUP_NA as string,",
+						"          PTKS1GROUP_NA as string,",
+						"          TFSM6CLA1A as string,",
+						"          PTFSM6CLA1A as string,",
+						"          TNotFSM6CLA1A as string,",
+						"          PTNotFSM6CLA1A as string,",
+						"          TEALGRP2 as string,",
+						"          PTEALGRP2 as string,",
+						"          TMOBN as string,",
+						"          PTMOBN as string,",
+						"          PTRWM_EXP as string,",
+						"          PTRWM_HIGH as string,",
+						"          READPROG as string,",
+						"          READPROG_LOWER as string,",
+						"          READPROG_UPPER as string,",
+						"          READCOV as string,",
+						"          WRITPROG as string,",
+						"          WRITPROG_LOWER as string,",
+						"          WRITPROG_UPPER as string,",
+						"          WRITCOV as string,",
+						"          MATPROG as string,",
+						"          MATPROG_LOWER as string,",
+						"          MATPROG_UPPER as string,",
+						"          MATCOV as string,",
+						"          PTREAD_EXP as string,",
+						"          PTREAD_HIGH as string,",
+						"          PTREAD_AT as string,",
+						"          READ_AVERAGE as string,",
+						"          PTGPS_EXP as string,",
+						"          PTGPS_HIGH as string,",
+						"          PTGPS_AT as string,",
+						"          GPS_AVERAGE as string,",
+						"          PTMAT_EXP as string,",
+						"          PTMAT_HIGH as string,",
+						"          PTMAT_AT as string,",
+						"          MAT_AVERAGE as string,",
+						"          PTWRITTA_EXP as string,",
+						"          PTWRITTA_HIGH as string,",
+						"          PTWRITTA_WTS as string,",
+						"          PTWRITTA_AD as string,",
+						"          PTSCITA_EXP as string,",
+						"          PTSCITA_AD as string,",
+						"          PTRWM_EXP_B as string,",
+						"          PTRWM_EXP_G as string,",
+						"          PTRWM_EXP_L as string,",
+						"          PTRWM_EXP_M as string,",
+						"          PTRWM_EXP_H as string,",
+						"          PTRWM_EXP_FSM6CLA1A as string,",
+						"          PTRWM_EXP_NotFSM6CLA1A as string,",
+						"          DIFFN_RWM_EXP as string,",
+						"          PTRWM_EXP_EAL as string,",
+						"          PTRWM_EXP_MOBN as string,",
+						"          PTRWM_HIGH_B as string,",
+						"          PTRWM_HIGH_G as string,",
+						"          PTRWM_HIGH_L as string,",
+						"          PTRWM_HIGH_M as string,",
+						"          PTRWM_HIGH_H as string,",
+						"          PTRWM_HIGH_FSM6CLA1A as string,",
+						"          PTRWM_HIGH_NotFSM6CLA1A as string,",
+						"          DIFFN_RWM_HIGH as string,",
+						"          PTRWM_HIGH_EAL as string,",
+						"          PTRWM_HIGH_MOBN as string,",
+						"          READPROG_B as string,",
+						"          READPROG_B_LOWER as string,",
+						"          READPROG_B_UPPER as string,",
+						"          READPROG_G as string,",
+						"          READPROG_G_LOWER as string,",
+						"          READPROG_G_UPPER as string,",
+						"          READPROG_L as string,",
+						"          READPROG_L_LOWER as string,",
+						"          READPROG_L_UPPER as string,",
+						"          READPROG_M as string,",
+						"          READPROG_M_LOWER as string,",
+						"          READPROG_M_UPPER as string,",
+						"          READPROG_H as string,",
+						"          READPROG_H_LOWER as string,",
+						"          READPROG_H_UPPER as string,",
+						"          READPROG_FSM6CLA1A as string,",
+						"          READPROG_FSM6CLA1A_LOWER as string,",
+						"          READPROG_FSM6CLA1A_UPPER as string,",
+						"          READPROG_NotFSM6CLA1A as string,",
+						"          READPROG_NotFSM6CLA1A_LOWER as string,",
+						"          READPROG_NotFSM6CLA1A_UPPER as string,",
+						"          DIFFN_READPROG as string,",
+						"          READPROG_EAL as string,",
+						"          READPROG_EAL_LOWER as string,",
+						"          READPROG_EAL_UPPER as string,",
+						"          READPROG_MOBN as string,",
+						"          READPROG_MOBN_LOWER as string,",
+						"          READPROG_MOBN_UPPER as string,",
+						"          WRITPROG_B as string,",
+						"          WRITPROG_B_LOWER as string,",
+						"          WRITPROG_B_UPPER as string,",
+						"          WRITPROG_G as string,",
+						"          WRITPROG_G_LOWER as string,",
+						"          WRITPROG_G_UPPER as string,",
+						"          WRITPROG_L as string,",
+						"          WRITPROG_L_LOWER as string,",
+						"          WRITPROG_L_UPPER as string,",
+						"          WRITPROG_M as string,",
+						"          WRITPROG_M_LOWER as string,",
+						"          WRITPROG_M_UPPER as string,",
+						"          WRITPROG_H as string,",
+						"          WRITPROG_H_LOWER as string,",
+						"          WRITPROG_H_UPPER as string,",
+						"          WRITPROG_FSM6CLA1A as string,",
+						"          WRITPROG_FSM6CLA1A_LOWER as string,",
+						"          WRITPROG_FSM6CLA1A_UPPER as string,",
+						"          WRITPROG_NotFSM6CLA1A as string,",
+						"          WRITPROG_NotFSM6CLA1A_LOWER as string,",
+						"          WRITPROG_NotFSM6CLA1A_UPPER as string,",
+						"          DIFFN_WRITPROG as string,",
+						"          WRITPROG_EAL as string,",
+						"          WRITPROG_EAL_LOWER as string,",
+						"          WRITPROG_EAL_UPPER as string,",
+						"          WRITPROG_MOBN as string,",
+						"          WRITPROG_MOBN_LOWER as string,",
+						"          WRITPROG_MOBN_UPPER as string,",
+						"          MATPROG_B as string,",
+						"          MATPROG_B_LOWER as string,",
+						"          MATPROG_B_UPPER as string,",
+						"          MATPROG_G as string,",
+						"          MATPROG_G_LOWER as string,",
+						"          MATPROG_G_UPPER as string,",
+						"          MATPROG_L as string,",
+						"          MATPROG_L_LOWER as string,",
+						"          MATPROG_L_UPPER as string,",
+						"          MATPROG_M as string,",
+						"          MATPROG_M_LOWER as string,",
+						"          MATPROG_M_UPPER as string,",
+						"          MATPROG_H as string,",
+						"          MATPROG_H_LOWER as string,",
+						"          MATPROG_H_UPPER as string,",
+						"          MATPROG_FSM6CLA1A as string,",
+						"          MATPROG_FSM6CLA1A_LOWER as string,",
+						"          MATPROG_FSM6CLA1A_UPPER as string,",
+						"          MATPROG_NotFSM6CLA1A as string,",
+						"          MATPROG_NotFSM6CLA1A_LOWER as string,",
+						"          MATPROG_NotFSM6CLA1A_UPPER as string,",
+						"          DIFFN_MATPROG as string,",
+						"          MATPROG_EAL as string,",
+						"          MATPROG_EAL_LOWER as string,",
+						"          MATPROG_EAL_UPPER as string,",
+						"          MATPROG_MOBN as string,",
+						"          MATPROG_MOBN_LOWER as string,",
+						"          MATPROG_MOBN_UPPER as string,",
+						"          READ_AVERAGE_B as string,",
+						"          READ_AVERAGE_G as string,",
+						"          READ_AVERAGE_L as string,",
+						"          READ_AVERAGE_M as string,",
+						"          READ_AVERAGE_H as string,",
+						"          READ_AVERAGE_FSM6CLA1A as string,",
+						"          READ_AVERAGE_NotFSM6CLA1A as string,",
+						"          READ_AVERAGE_EAL as string,",
+						"          READ_AVERAGE_MOBN as string,",
+						"          MAT_AVERAGE_B as string,",
+						"          MAT_AVERAGE_G as string,",
+						"          MAT_AVERAGE_L as string,",
+						"          MAT_AVERAGE_M as string,",
+						"          MAT_AVERAGE_H as string,",
+						"          MAT_AVERAGE_FSM6CLA1A as string,",
+						"          MAT_AVERAGE_NotFSM6CLA1A as string,",
+						"          MAT_AVERAGE_EAL as string,",
+						"          MAT_AVERAGE_MOBN as string,",
+						"          GPS_AVERAGE_B as string,",
+						"          GPS_AVERAGE_G as string,",
+						"          GPS_AVERAGE_L as string,",
+						"          GPS_AVERAGE_M as string,",
+						"          GPS_AVERAGE_H as string,",
+						"          GPS_AVERAGE_FSM6CLA1A as string,",
+						"          GPS_AVERAGE_NotFSM6CLA1A as string,",
+						"          GPS_AVERAGE_EAL as string,",
+						"          GPS_AVERAGE_MOBN as string,",
+						"          PTREAD_EXP_L as string,",
+						"          PTREAD_EXP_M as string,",
+						"          PTREAD_EXP_H as string,",
+						"          PTREAD_EXP_FSM6CLA1A as string,",
+						"          PTREAD_EXP_NotFSM6CLA1A as string,",
+						"          PTGPS_EXP_L as string,",
+						"          PTGPS_EXP_M as string,",
+						"          PTGPS_EXP_H as string,",
+						"          PTGPS_EXP_FSM6CLA1A as string,",
+						"          PTGPS_EXP_NotFSM6CLA1A as string,",
+						"          PTMAT_EXP_L as string,",
+						"          PTMAT_EXP_M as string,",
+						"          PTMAT_EXP_H as string,",
+						"          PTMAT_EXP_FSM6CLA1A as string,",
+						"          PTMAT_EXP_NotFSM6CLA1A as string,",
+						"          PTWRITTA_EXP_L as string,",
+						"          PTWRITTA_EXP_M as string,",
+						"          PTWRITTA_EXP_H as string,",
+						"          PTWRITTA_EXP_FSM6CLA1A as string,",
+						"          PTWRITTA_EXP_NotFSM6CLA1A as string,",
+						"          PTREAD_HIGH_L as string,",
+						"          PTREAD_HIGH_M as string,",
+						"          PTREAD_HIGH_H as string,",
+						"          PTREAD_HIGH_FSM6CLA1A as string,",
+						"          PTREAD_HIGH_NotFSM6CLA1A as string,",
+						"          PTGPS_HIGH_L as string,",
+						"          PTGPS_HIGH_M as string,",
+						"          PTGPS_HIGH_H as string,",
+						"          PTGPS_HIGH_FSM6CLA1A as string,",
+						"          PTGPS_HIGH_NotFSM6CLA1A as string,",
+						"          PTMAT_HIGH_L as string,",
+						"          PTMAT_HIGH_M as string,",
+						"          PTMAT_HIGH_H as string,",
+						"          PTMAT_HIGH_FSM6CLA1A as string,",
+						"          PTMAT_HIGH_NotFSM6CLA1A as string,",
+						"          PTWRITTA_HIGH_L as string,",
+						"          PTWRITTA_HIGH_M as string,",
+						"          PTWRITTA_HIGH_H as string,",
+						"          PTWRITTA_HIGH_FSM6CLA1A as string,",
+						"          PTWRITTA_HIGH_NotFSM6CLA1A as string,",
+						"          TEALGRP1 as string,",
+						"          PTEALGRP1 as string,",
+						"          TEALGRP3 as string,",
+						"          PTEALGRP3 as string,",
+						"          TSENELE as string,",
+						"          PSENELE as string,",
+						"          TSENELK as string,",
+						"          PSENELK as string,",
+						"          TSENELEK as string,",
+						"          PSENELEK as string,",
+						"          TELIG_18 as string,",
+						"          PTFSM6CLA1A_18 as string,",
+						"          PTNOTFSM6CLA1A_18 as string,",
+						"          PTRWM_EXP_18 as string,",
+						"          PTRWM_HIGH_18 as string,",
+						"          PTRWM_EXP_FSM6CLA1A_18 as string,",
+						"          PTRWM_HIGH_FSM6CLA1A_18 as string,",
+						"          PTRWM_EXP_NotFSM6CLA1A_18 as string,",
+						"          PTRWM_HIGH_NotFSM6CLA1A_18 as string,",
+						"          READPROG_18 as string,",
+						"          READPROG_LOWER_18 as string,",
+						"          READPROG_UPPER_18 as string,",
+						"          WRITPROG_18 as string,",
+						"          WRITPROG_LOWER_18 as string,",
+						"          WRITPROG_UPPER_18 as string,",
+						"          MATPROG_18 as string,",
+						"          MATPROG_LOWER_18 as string,",
+						"          MATPROG_UPPER_18 as string,",
+						"          READ_AVERAGE_18 as string,",
+						"          MAT_AVERAGE_18 as string,",
+						"          TELIG_17 as string,",
+						"          PTFSM6CLA1A_17 as string,",
+						"          PTNOTFSM6CLA1A_17 as string,",
+						"          PTRWM_EXP_17 as string,",
+						"          PTRWM_HIGH_17 as string,",
+						"          PTRWM_EXP_FSM6CLA1A_17 as string,",
+						"          PTRWM_HIGH_FSM6CLA1A_17 as string,",
+						"          PTRWM_EXP_NotFSM6CLA1A_17 as string,",
+						"          PTRWM_HIGH_NotFSM6CLA1A_17 as string,",
+						"          READPROG_17 as string,",
+						"          READPROG_LOWER_17 as string,",
+						"          READPROG_UPPER_17 as string,",
+						"          WRITPROG_17 as string,",
+						"          WRITPROG_LOWER_17 as string,",
+						"          WRITPROG_UPPER_17 as string,",
+						"          MATPROG_17 as string,",
+						"          MATPROG_LOWER_17 as string,",
+						"          MATPROG_UPPER_17 as string,",
+						"          READ_AVERAGE_17 as string,",
+						"          MAT_AVERAGE_17 as string,",
+						"          TELIG_3YR as string,",
+						"          PTRWM_EXP_3YR as string,",
+						"          PTRWM_HIGH_3YR as string,",
+						"          READ_AVERAGE_3YR as string,",
+						"          MAT_AVERAGE_3YR as string,",
+						"          READPROG_UNADJUSTED as string,",
+						"          WRITPROG_UNADJUSTED as string,",
+						"          MATPROG_UNADJUSTED as string,",
+						"          READPROG_DESCR_17 as string,",
+						"          WRITPROG_DESCR_17 as string,",
+						"          MATPROG_DESCR_17 as string,",
+						"          READPROG_DESCR_18 as string,",
+						"          WRITPROG_DESCR_18 as string,",
+						"          MATPROG_DESCR_18 as string,",
+						"          READPROG_DESCR as string,",
+						"          WRITPROG_DESCR as string,",
+						"          MATPROG_DESCR as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> source1",
+						"source1 derive(pcode_short = substring(PCODE,0,4)) ~> derivedColumn1",
+						"derivedColumn1 aggregate(groupBy(pcode_short),",
+						"     total_count = count()) ~> aggregate1",
+						"derivedColumn1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sink1",
+						"aggregate1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     staged: true,",
+						"     allowCopyCommand: true,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> sink2"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/Excel1')]",
+				"[concat(variables('workspaceId'), '/datasets/Parquet1')]",
+				"[concat(variables('workspaceId'), '/datasets/AzureSynapseAnalyticsTable2')]"
 			]
 		},
 		{
@@ -1804,7 +3675,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "6",
-						"spark.autotune.trackingId": "98a253bb-df60-49b9-b5c4-62b00488e7d4"
+						"spark.autotune.trackingId": "c73b0391-d60e-443d-8bd7-9485b5ba43e6"
 					}
 				},
 				"metadata": {
@@ -1829,8 +3700,7 @@
 						"sparkVersion": "3.2",
 						"nodeCount": 10,
 						"cores": 8,
-						"memory": 56,
-						"automaticScaleJobs": true
+						"memory": 56
 					},
 					"sessionKeepAliveTimeout": 30
 				},
@@ -2060,7 +3930,7 @@
 							"\"\"\".format(DataPath))"
 						],
 						"outputs": [],
-						"execution_count": 8
+						"execution_count": 10
 					},
 					{
 						"cell_type": "code",
@@ -2084,7 +3954,7 @@
 							"SELECT count(*) FROM customer_data_delta"
 						],
 						"outputs": [],
-						"execution_count": 9
+						"execution_count": 11
 					},
 					{
 						"cell_type": "markdown",
@@ -2383,7 +4253,7 @@
 							"SELECT * FROM customer_data_delta WHERE CustomerID=20993"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 21
 					},
 					{
 						"cell_type": "code",
@@ -2619,6 +4489,18 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/cmpnbnmosngz7ou2pocws1p1')]",
+			"type": "Microsoft.Synapse/workspaces/sqlPools",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"collation": "SQL_Latin1_General_CP1_CI_AS",
+				"maxSizeBytes": 263882790666240,
+				"annotations": []
+			},
+			"dependsOn": [],
+			"location": "uksouth"
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/ws1sparkpool1')]",
 			"type": "Microsoft.Synapse/workspaces/bigDataPools",
 			"apiVersion": "2019-06-01-preview",
@@ -2713,18 +4595,6 @@
 				"sparkVersion": "3.2",
 				"isComputeIsolationEnabled": false,
 				"sessionLevelPackagesEnabled": false,
-				"annotations": []
-			},
-			"dependsOn": [],
-			"location": "uksouth"
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/cmpnbnmosngz7ou2pocws1p1')]",
-			"type": "Microsoft.Synapse/workspaces/sqlPools",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"collation": "SQL_Latin1_General_CP1_CI_AS",
-				"maxSizeBytes": 263882790666240,
 				"annotations": []
 			},
 			"dependsOn": [],
